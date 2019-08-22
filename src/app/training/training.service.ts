@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Exercise } from './exercise.model';
@@ -16,26 +17,30 @@ export class TrainingService {
 
     private runningExercise: Exercise;
 
+    private firebaseSubscripitons: Subscription[] = [];
+
     constructor( private db: AngularFirestore) {}
 
     fetchAvailableExercises() {
-        this.db
-        .collection('availableExercises')
-        .snapshotChanges()
-        .pipe(map( docArray => {
-            return docArray.map(doc => {
-                return {
-                    id: doc.payload.doc.id,
-                    name: doc.payload.doc.data()['name'],
-                    duration: doc.payload.doc.data()['duration'],
-                    calories: doc.payload.doc.data()['calories']
-                };
+        this.firebaseSubscripitons.push(
+            this.db
+            .collection('availableExercises')
+            .snapshotChanges()
+            .pipe(map( docArray => {
+                return docArray.map(doc => {
+                    return {
+                        id: doc.payload.doc.id,
+                        name: doc.payload.doc.data()['name'],
+                        duration: doc.payload.doc.data()['duration'],
+                        calories: doc.payload.doc.data()['calories']
+                    };
+                })
+            }))
+            .subscribe((exercises: Exercise[]) => {
+                this.availableExercises = exercises;
+                this.exercisesChanged.next([...this.availableExercises]); 
             })
-        }))
-        .subscribe((exercises: Exercise[]) => {
-            this.availableExercises = exercises;
-            this.exercisesChanged.next([...this.availableExercises]); 
-        });    
+        );    
     }
 
     startExercise(selectedId: string) {
@@ -70,12 +75,20 @@ export class TrainingService {
     }
 
     fetchCompletedOrCancelledExercises() {
-        this.db
+        this.firebaseSubscripitons.push(
+            this.db
             .collection('finishedExercises')
             .valueChanges()
             .subscribe((exercises: Exercise[]) => {
                 this.finishedExercisesChanged.next(exercises);
-        });
+            })
+        );
+    }
+
+    cancelSubscriptions() {
+        this.firebaseSubscripitons.forEach(
+            sub => sub.unsubscribe()
+        );
     }
 
     private addDataToDatabase(exercise: Exercise) {
