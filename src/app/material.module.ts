@@ -16,7 +16,8 @@ import {
     MatDialogModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSnackBarModule
 } from '@angular/material';
 import { MatButtonModule } from '@angular/material/button'
 
@@ -39,7 +40,8 @@ import { MatButtonModule } from '@angular/material/button'
         MatDialogModule, 
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule],
+        MatPaginatorModule,
+        MatSnackBarModule],
 
     exports: [
         MatButtonModule, 
@@ -59,8 +61,8 @@ import { MatButtonModule } from '@angular/material/button'
         MatDialogModule, 
         MatTableModule,
         MatSortModule,
-        MatPaginatorModule],
-    
+        MatPaginatorModule,
+        MatSnackBarModule],    
 },)
 
 export class MaterialModule {}
