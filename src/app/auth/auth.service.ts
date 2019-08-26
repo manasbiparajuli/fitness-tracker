@@ -10,6 +10,7 @@ import { Store } from '@ngrx/store';
 
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
+import * as Auth from '../auth/auth.actions';
 
 @Injectable()
 export class AuthService {
@@ -26,13 +27,12 @@ export class AuthService {
     initAuthListener() {
         this.afAuth.authState.subscribe(user => {
             if (user){
-                this.isAuthenticated = true;
-                this.authChange.next(true);
+                this.store.dispatch(new Auth.SetAuthenticated());
                 this.router.navigate(['/training']);        
             }
             else {
                 this.trainingService.cancelSubscriptions();
-                this.authChange.next(false);
+                this.store.dispatch(new Auth.SetUnauthenticated());
                 this.router.navigate(['/login']);
                 this.isAuthenticated = false;        
             }
@@ -40,9 +40,6 @@ export class AuthService {
     }    
 
     registerUser (authData: AuthData) {
-
-        // this.uiService.loadingStateChanged.next(true);
-
         this.store.dispatch(new UI.StartLoading());
 
         this.afAuth.auth.createUserWithEmailAndPassword(
@@ -50,19 +47,15 @@ export class AuthService {
             authData.password
         )
         .then (result => {
-            // this.uiService.loadingStateChanged.next(false);
             this.store.dispatch(new UI.StopLoading());
         })
         .catch (error => {
-            // this.uiService.loadingStateChanged.next(false);
             this.store.dispatch(new UI.StopLoading());
             this.uiService.showSnackbar(error.message, null, 2000);
         });
     }
 
     login (authData: AuthData) {
-
-        // this.uiService.loadingStateChanged.next(true);
         this.store.dispatch(new UI.StartLoading());
         
         this.afAuth.auth.signInWithEmailAndPassword(
@@ -70,11 +63,9 @@ export class AuthService {
             authData.password
         )
         .then (result => {
-            // this.uiService.loadingStateChanged.next(false);
             this.store.dispatch(new UI.StopLoading());
         })
         .catch (error => {
-            // this.uiService.loadingStateChanged.next(false);
             this.store.dispatch(new UI.StopLoading());
             this.uiService.showSnackbar(error.message, null, 2000);
         });
@@ -82,9 +73,5 @@ export class AuthService {
 
     logout() {
         this.afAuth.auth.signOut();
-    }
-
-    isAuth() {
-        return this.isAuthenticated;
     }
 }

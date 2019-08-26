@@ -10,7 +10,7 @@
             <mat-error>Invalid password</mat-error>
         </mat-form-field>
 
-        <button *ngIf="!(isLoading |  async)" type="submit" mat-raised-button color="accent" [disabled]="loginForm.invalid">Submit</button>
+        <button *ngIf="!(isLoading$ |  async)" type="submit" mat-raised-button color="accent" [disabled]="loginForm.invalid">Submit</button>
         <mat-spinner *ngIf="(isLoading$ | async)"></mat-spinner>
     </form>
 </section>
