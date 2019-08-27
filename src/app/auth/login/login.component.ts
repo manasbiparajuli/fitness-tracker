@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
 
     constructor(private authService: AuthService, 
                 private store: Store<fromRoot.State>
-        ) { }
+    ) { }
 
     ngOnInit() {
 
