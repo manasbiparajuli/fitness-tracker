@@ -1,12 +1,11 @@
 import { Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-
-import { Exercise } from './exercise.model';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { UIService } from '../shared/ui.service';
 
+import { Exercise } from './exercise.model';
+import { UIService } from '../shared/ui.service';
 import * as UI from '../shared/ui.actions';
 import * as Training from './training.actions';
 import * as fromTraining from '../training/training.reducer';
