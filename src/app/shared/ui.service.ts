@@ -1,8 +1,6 @@
-import { Subject, config } from 'rxjs';
 import { MatSnackBar } from '@angular/material';
 
 export class UIService {
-    loadingStateChanged = new Subject<boolean>();
 
     constructor( private snackbar: MatSnackBar){}
 
